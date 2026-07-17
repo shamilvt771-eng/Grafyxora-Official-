@@ -1,0 +1,12 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel deployment metadata
+.vercel/
+
+# Local configuration / OS files
+.DS_Store
+Thumbs.db

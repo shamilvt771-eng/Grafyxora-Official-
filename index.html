@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GRAFYXORA 2026 — AAA Interactive Game Portfolio</title>
+  
+  <!-- SEO Metadata -->
+  <meta name="description" content="Grafyxora 2026 is an immersive 3D driving game portfolio for Shamil VT. Drive, explore, discover design achievements, and query the system.">
+  <meta name="keywords" content="Grafyxora, Shamil, 3D Portfolio, ThreeJS, WebGL Game, Graphic Designer, Interactive Game">
+  <meta name="author" content="Shamil VT">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="game-loading">
+
+  <!-- Core WebGL Game Canvas Container -->
+  <div id="game-container"></div>
+
+  <!-- Loading Shutter Overlay -->
+  <div id="game-loader" class="loader-overlay">
+    <div class="loader-backdrop-lines"></div>
+    <div class="loader-content">
+      <div class="loader-logo">GRAFYXORA 2026</div>
+      <div class="loader-subtitle">AAA INTERACTIVE DESIGN VAULT</div>
+      
+      <!-- Interactive status bar -->
+      <div class="progress-bar-container">
+        <div id="loader-progress" class="progress-fill"></div>
+      </div>
+      <div id="loader-status" class="status-msg">COMPILING PROCEDURAL ISLAND GEOMETRIES...</div>
+      
+      <!-- Instructions Box -->
+      <div class="game-instructions glassmorphic-card">
+        <h3>CONTROLS ARCHITECTURE</h3>
+        <div class="control-row"><span class="key">W</span> <span class="key">A</span> <span class="key">S</span> <span class="key">D</span> or <span class="key">▲</span> <span class="key">◀</span> <span class="key">▼</span> <span class="key">▶</span> — ACCELERATE & STEER</div>
+        <div class="control-row"><span class="key">SHIFT</span> — NITRO BOOST SPEED</div>
+        <div class="control-row"><span class="key">SPACE</span> — HANDBRAKE / TYRE DRIFT SLIDES</div>
+        <div class="control-row"><span class="key">E</span> — ENTER PAGODA STUDIO / BRAND HOUSES</div>
+        <div class="control-row"><span class="key">V</span> — CHANGE CAMERA (3RD PERSON / DRONE CAMERA)</div>
+      </div>
+      
+      <button id="start-game-btn" class="start-btn disabled">ENTER DIGITAL WORLD</button>
+    </div>
+  </div>
+
+  <!-- HUD Dashboard Overlays -->
+  <div id="game-hud" class="hud-layer">
+    
+    <!-- Top Bar: Location & Status -->
+    <div class="hud-top-bar">
+      <div class="hud-panel-group glassmorphic-panel">
+        <div class="hud-label">COGNITIVE AREA:</div>
+        <div id="hud-area-name" class="hud-val text-gradient">CENTRAL HIGHWAY</div>
+      </div>
+      
+      <div class="hud-panel-group glassmorphic-panel">
+        <div class="hud-label">SCROLLS DISCOVERED:</div>
+        <div id="stat-scrolls" class="hud-val">0/6</div>
+      </div>
+
+      <!-- Controls panel triggers -->
+      <div class="hud-panel-group glassmorphic-panel sound-panel" id="hud-audio-toggle">
+        <span class="hud-icon"><i class="fa-solid fa-volume-xmark"></i></span>
+        <span id="hud-audio-text">AUDIO: OFF</span>
+      </div>
+    </div>
+
+    <!-- Right Bar: Customization panel (Weather & Day Cycle) -->
+    <div class="hud-right-panel glassmorphic-panel">
+      <h4>MATRIX CONTROLS</h4>
+      
+      <div class="panel-section">
+        <label class="section-lbl">ENVIRONMENT CYCLE</label>
+        <div class="slider-wrap">
+          <input type="range" id="hud-time-slider" min="0" max="24" step="0.5" value="12">
+          <div class="slider-val"><span id="hud-time-val">12:00</span> (NOON)</div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <label class="section-lbl">ATMOSPHERIC WEATHER</label>
+        <div class="weather-buttons">
+          <button class="weather-btn active" id="weather-sunny">SUNNY</button>
+          <button class="weather-btn" id="weather-rainy">RAINY</button>
+          <button class="weather-btn" id="weather-storm">STORM</button>
+        </div>
+      </div>
+
+      <div class="panel-section border-top">
+        <div class="shortcut-tip">TIP: Press <kbd>T</kbd> for Dev Terminal.</div>
+      </div>
+    </div>
+
+    <!-- Bottom Left: Minimap Navigator (AAA element) -->
+    <div class="hud-minimap glassmorphic-panel">
+      <canvas id="minimap-canvas" width="130" height="130"></canvas>
+      <div class="minimap-north">N</div>
+    </div>
+
+    <!-- Bottom Center: Speeds & Gas HUD gauges -->
+    <div class="hud-speedometer-panel glassmorphic-panel">
+      <div class="speed-number" id="stat-speed">0 KM/H</div>
+      <div class="gauge-bar-container">
+        <div class="nitro-label">NITRO ENGINES:</div>
+        <div class="gauge-track">
+          <div id="stat-nitro-bar" class="gauge-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Right: Active notifications stack -->
+    <div id="hud-notifications" class="notifications-layer"></div>
+
+    <!-- Proximity prompts overlay (E to enter) -->
+    <div id="hud-prompt" class="hud-center-prompt glassmorphic-panel"></div>
+
+    <!-- Mobile Virtual Joysticks & Action Buttons (Hidden on Desktops) -->
+    <div id="hud-mobile-joystick" class="mobile-joystick-box">
+      <div class="joystick-ring">
+        <div class="joystick-knob"></div>
+      </div>
+    </div>
+    
+    <div class="mobile-action-buttons">
+      <button id="hud-mobile-nitro" class="mobile-btn nitro-btn"><i class="fa-solid fa-fire-flame-curved"></i></button>
+      <div class="pedal-group">
+        <button id="hud-mobile-brake" class="mobile-btn brake-pedal">BRAKE</button>
+        <button id="hud-mobile-gas" class="mobile-btn gas-pedal">GAS</button>
+      </div>
+      <button id="hud-mobile-handbrake" class="mobile-btn drift-btn">DRIFT</button>
+    </div>
+
+  </div>
+
+  <!-- Building Interaction Overlay (Floating Project Showcase Modal) -->
+  <div id="hud-building-modal" class="modal-layer">
+    <div class="modal-backdrop-glare"></div>
+    <div class="modal-window-frame glassmorphic-panel">
+      
+      <div class="modal-header">
+        <div>
+          <span class="system-status-indicator"><span class="blink-dot"></span> CONNECTION READY</span>
+          <h2 id="modal-building-name" class="text-gradient">GRAPHIC DESIGN STUDIO</h2>
+        </div>
+        <button id="modal-hud-close" class="modal-close-icon" aria-label="Exit building"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="modal-body-scroll">
+        <p id="modal-building-headline" class="modal-subheadline">PREMIUM ADVERTISING CAMPAIGNS & LAYOUTS</p>
+        <p id="modal-building-desc" class="modal-info-p">Detailed overview showing Shamil's 3+ years branding pipelines, vector calligraphies, and high-impact poster displays.</p>
+        
+        <!-- Showcase grid -->
+        <div id="modal-projects-grid" class="projects-vault-grid">
+          <!-- Dynamically populated project cards -->
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Overlay Dev console terminal (Press T) -->
+  <div id="hud-terminal-console" class="terminal-overlay">
+    <div class="terminal-header-panel">
+      <span class="console-title"><i class="fa-solid fa-terminal"></i> GRAFYXORA CORE DECK CORE TERMINAL</span>
+      <span class="console-close" id="hud-terminal-close">✕</span>
+    </div>
+    <div class="terminal-history-buffer" id="hud-terminal-buffer">
+      <div class="terminal-line system">GRAFYXORA v3.0.0 CORE GAME INTERFACE DECK ACTIVE.</div>
+      <div class="terminal-line system">TYPE 'help' TO VIEW COMMAND INVENTORY.</div>
+    </div>
+    <div class="terminal-input-row">
+      <span class="prompt-sym">shell:~#</span>
+      <input type="text" id="hud-terminal-input" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- Breathtaking Final Cinematic Overlay -->
+  <div id="game-cinematic-end" class="cinematic-layer">
+    <div class="cinematic-bars top"></div>
+    <div class="cinematic-bars bottom"></div>
+    <div class="cinematic-card-center">
+      <h2 class="cinematic-title text-gradient">GRAFYXORA</h2>
+      <p class="cinematic-p">Where creativity becomes an unforgettable journey.</p>
+      <div class="cinematic-credits">PROJECTS DIRECTED BY SHAMIL VT • DESIGN VAULT 2026</div>
+      <button id="cinematic-restart-btn" class="start-btn">REENTER EXPLORATION</button>
+    </div>
+  </div>
+
+  <!-- Core JavaScript Imports -->
+  <script type="module" src="main.js"></script>
+
+</body>
+</html>
