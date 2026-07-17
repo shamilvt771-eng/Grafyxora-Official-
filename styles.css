@@ -1111,3 +1111,18 @@ body.game-loading {
     display: none; /* Free up mobile space */
   }
 }
+
+/* മൊബൈൽ സ്ക്രീനുകളിൽ ഹെഡിങ് കട്ടാകാതെ ഫിറ്റ് ചെയ്യാൻ */
+@media (max-width: 768px) {
+  /* നിന്റെ ഹെഡിങ് h1 ടാഗിലോ അല്ലെങ്കിൽ ഏതെങ്കിലും ക്ലാസ്സിലോ ആയിരിക്കും */
+  h1, .logo, .title, [class*="title"], [class*="logo"] {
+    font-size: 10vw !important; /* സ്ക്രീൻ വീതിക്ക് അനുസരിച്ച് സൈസ് ഓട്ടോമാറ്റിക് ആയി മാറും */
+    letter-spacing: 2px !important; /* അക്ഷരങ്ങൾക്കിടയിലെ അകലം കുറയ്ക്കുന്നു */
+    text-align: center !important;
+  }
+  
+  /* 2026 എന്ന സബ്‌ഹെഡിംഗിന്റെ സൈസ് അഡ്ജസ്റ്റ് ചെയ്യാൻ */
+  h2, .subtitle, [class*="subtitle"] {
+    font-size: 6vw !important;
+  }
+}
